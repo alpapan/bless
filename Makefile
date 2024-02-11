@@ -1,27 +1,29 @@
-CC=mpicxx
-PROG=bless
-CFLAGS=-Wall -O3 -I ./boost/include -I ./google-sparsehash -I ./zlib/install/include -I ./klib -I ./kmc/kmc_api -fopenmp -std=c++11
-LDFLAGS=./boost/lib/libboost_filesystem.a ./boost/lib/libboost_system.a ./boost/lib/libboost_iostreams.a ./zlib/install/lib/libz.a -fopenmp -std=c++11
-SRCS=kmc/kmc_api/kmc_file.cpp kmc/kmc_api/kmer_api.cpp kmc/kmc_api/mmer.cpp murmurhash3/MurmurHash3.cpp check_inputs.cpp correct_errors.cpp count_solid_kmers.cpp main.cpp parse_args.cpp
-OBJS=$(SRCS:.cpp=.o)
-ZLIB=ZLIB
+CC = mpicc
+CXX = mpicxx
+PROG = bless
 
-$(PROG): $(ZLIB) $(OBJS)
-	$(CC) $(OBJS) -o $@ $(LDFLAGS)
-	cd kmc; make CC=$(CC)
-	cd pigz/pigz-2.3.3; make
+BLESS_PATH := $(shell conda env list -q | grep '*' | awk '{print $$3}')
 
-$(ZLIB):
-	cd zlib; ./compile
+CFLAGS = -O3 -I$(BLESS_PATH)/include -I./klib -fopenmp
+CXXFLAGS = $(CFLAGS) -std=c++11
 
-kmc/kmc_api/%.o: kmc/kmc_api/%.cpp
-	$(CC) $(CFLAGS) -c $(DEF) $? -o $@
+LDFLAGS = -L$(BLESS_PATH)/lib -lboost_iostreams -lboost_filesystem -lboost_system -lkmc -lz -lcurl -ldl
+
+CSRC = $(wildcard klib/*.c)
+CPPSRC = murmurhash3/src/MurmurHash3.cpp src/check_inputs.cpp src/correct_errors.cpp src/count_solid_kmers.cpp src/main.cpp src/parse_args.cpp
+
+COBJ = $(CSRC:.c=.o)
+CPPOBJ = $(CPPSRC:.cpp=.o)
+OBJS = $(COBJ) $(CPPOBJ)
+
+$(PROG): $(OBJS)
+	$(CXX) -fopenmp $(OBJS) -o $@ $(LDFLAGS)
 
 %.o: %.cpp
-	$(CC) $(CFLAGS) -c $(DEF) $? -o $@
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
 	rm -rf $(PROG) $(OBJS)
-	cd kmc; make clean; cd ..
-	cd zlib; rm -rf install; cd zlib-1.2.8; make clean; cd ../..
-	cd pigz/pigz-2.3.3; make clean; cd ../..
