@@ -46,10 +46,10 @@ Max. mem. for 2nd stage      :    16MB
 Stage 2: 0%Stage 2: 15%Stage 2: 26%Stage 2: 34%Stage 2: 41%Stage 2: 47%Stage 2: 52%Stage 2: 58%Stage 2: 63%Stage 2: 68%Stage 2: 73%Stage 2: 77%Stage 2: 80%Stage 2: 83%Stage 2: 85%Stage 2: 88%Stage 2: 90%Stage 2: 91%Stage 2: 93%Stage 2: 94%Stage 2: 95%Stage 2: 96%Stage 2: 97%Stage 2: 98%Stage 2: 99%Stage 2: 100%
 
 
-1st stage: 0.109632s
-2nd stage: 1.32857s
-3rd stage: 0.001532s
-Total    : 1.43973s
+1st stage: 0.10543s
+2nd stage: 1.34564s
+3rd stage: 0.002254s
+Total    : 1.45332s
 Tmp size : 0MB
 Tmp size strict memory : 0MB
 Tmp total: 0MB
