@@ -13,9 +13,6 @@ export BLESS_PATH=`conda env list -q |grep '*'|awk '{print $3}'`
 mkdir -p $BLESS_PATH/etc/conda/activate.d/ && cp -i conda/activate.d/env_vars.sh $BLESS_PATH/etc/conda/activate.d/
 mkdir -p $BLESS_PATH/etc/conda/deactivate.d/ && cp -i conda/deactivate.d/env_vars.sh $BLESS_PATH/etc/conda/deactivate.d/
 
-conda env config vars set LD_LIBRARY_PATH=$BLESS_PATH/lib
-
-conda deactivate && conda activate bless2
 make clean && make -j 4 && cp -i bless $BLESS_PATH/bin
 
 conda deactivate
@@ -28,8 +25,6 @@ Given a kmer size k and file i:
 ```
 conda activate bless2
 
-k=21
-i=test/test.fasta.gz
-
-bless -kmerlength $k -gzip -count 2 -max_mem 10 -smpthread 10 -prefix $i.$k -read $i
+cd test
+bash test.sh
 ```
